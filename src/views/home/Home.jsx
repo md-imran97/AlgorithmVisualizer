@@ -36,7 +36,11 @@ const Home = () => {
         </SplitterPanel>
         <SplitterPanel className="" size={35} minSize={10}>
           <Panel
-            header="Code"
+            header={
+              <>
+                <button>run</button>
+              </>
+            }
             className="overflow-auto h-full w-full"
             pt={{ content: { style: { border: "0px" } } }}
           >
@@ -44,7 +48,7 @@ const Home = () => {
               autoResize
               className="w-full"
               //onChange={(e) => setValue(e.target.value)}
-              rows={15}
+              rows={16}
             />
           </Panel>
         </SplitterPanel>
