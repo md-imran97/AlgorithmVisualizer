@@ -1,56 +1,44 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 import { Splitter, SplitterPanel } from "primereact/splitter";
-import { Panel } from "primereact/panel";
-import { InputTextarea } from "primereact/inputtextarea";
+import VisualizePanel from "./components/VisualizePanel";
+import CodePanel from "./components/CodePanel";
+import Executor from "../../executor";
 
 const Home = () => {
+  const [isRunning, setIsRunning] = useState(false);
+  const [isPause, setIsPause] = useState(false);
+  const [speed, setSpeed] = useState(50);
+  const [sourceCode, setSourceCode] = useState("");
+  const [nodeList, setNodeList] = useState([]);
+  const [parseError, setParseError] = useState("");
+  const executor = useRef(
+    new Executor({ setNodeList, setParseError, setIsRunning })
+  );
+
+  const runButtonClickHandler = (e) => {};
+  const stopButtonClickHandler = (e) => {};
+  const pauseButtonClickHandler = (e) => {};
+  const speedButtonChangeHandler = (e) => {};
   return (
     <div className="mx-2 my-4 bg-primary">
       <Splitter style={{ height: "420px", borderRadius: "0px" }}>
         <SplitterPanel className=" " size={65} minSize={50}>
-          <Panel
-            header="Visualize"
-            className="overflow-auto h-full w-full"
-            pt={{ content: { style: { border: "0px" } } }}
-          >
-            <div className=" flex flex-row flex-wrap  ">
-              <div className="flex align-items-center justify-content-center w-4rem h-4rem bg-primary font-bold border-round m-2">
-                1
-              </div>
-
-              <div className="flex align-items-center justify-content-center w-4rem h-4rem bg-primary font-bold border-round m-2">
-                3
-              </div>
-              <div className="flex align-items-center justify-content-center w-4rem h-4rem bg-primary font-bold border-round m-2">
-                3
-              </div>
-              <div className="flex align-items-center justify-content-center w-4rem h-4rem bg-primary font-bold border-round m-2">
-                3
-              </div>
-
-              <div className="flex align-items-center justify-content-center w-4rem h-4rem bg-primary font-bold border-round m-2">
-                3
-              </div>
-            </div>
-          </Panel>
+          <VisualizePanel
+            speedChangeHandler={speedButtonChangeHandler}
+            speed={speed}
+            //nodeList={}
+          />
         </SplitterPanel>
         <SplitterPanel className="" size={35} minSize={10}>
-          <Panel
-            header={
-              <>
-                <button>run</button>
-              </>
-            }
-            className="overflow-auto h-full w-full"
-            pt={{ content: { style: { border: "0px" } } }}
-          >
-            <InputTextarea
-              autoResize
-              className="w-full"
-              //onChange={(e) => setValue(e.target.value)}
-              rows={16}
-            />
-          </Panel>
+          <CodePanel
+            isRunning={isRunning}
+            isPause={isPause}
+            runClickHandler={runButtonClickHandler}
+            pauseClickHandler={pauseButtonClickHandler}
+            stopClickHandler={stopButtonClickHandler}
+            sourceCode={sourceCode}
+            setSourceCode={setSourceCode}
+          />
         </SplitterPanel>
       </Splitter>
     </div>
