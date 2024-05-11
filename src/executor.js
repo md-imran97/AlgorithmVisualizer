@@ -132,7 +132,7 @@ export default function executor({ setNodeList, setParseError, setIsRunning }) {
         clearInterval(intervalId);
       }
       currentStatment();
-    }, speed * 100);
+    }, (100 - speed) * 100);
   }
   function parseSourceCode(sourceCode) {
     isCodeParsing = true;
