@@ -10,7 +10,7 @@ const Home = () => {
   const [isPause, setIsPause] = useState(false);
   const [speed, setSpeed] = useState(80);
   const [sourceCode, setSourceCode] = useState(`
-
+  // Language support: Javascript (only)
   // All the methods to visualize algorithm
 
   // array element must be an object and must have id and value property
