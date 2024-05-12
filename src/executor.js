@@ -8,7 +8,7 @@ import {
 
 export default function executor() {
   const queue = new ExecutionQueue();
-  const speedConstant = 10;
+  const speedConstant = 15;
   const totalSpeed = 100;
   let visualNodeList = [];
 
