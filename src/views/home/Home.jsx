@@ -3,7 +3,8 @@ import { Splitter, SplitterPanel } from "primereact/splitter";
 import VisualizePanel from "./components/VisualizePanel";
 import CodePanel from "./components/CodePanel";
 import Executor from "../../executor";
-
+import LogView from "./components/LogView";
+const executor = new Executor();
 const Home = () => {
   const [isRunning, setIsRunning] = useState(false);
   const [isPause, setIsPause] = useState(false);
@@ -38,22 +39,43 @@ const Home = () => {
   `);
   const [nodeList, setNodeList] = useState([]);
   const [parseError, setParseError] = useState("");
-  const executor = useRef(
-    new Executor({ setNodeList, setParseError, setIsRunning })
-  );
+  const [log, setLog] = useState("");
 
-  const runButtonClickHandler = (e) => {};
-  const stopButtonClickHandler = (e) => {};
-  const pauseButtonClickHandler = (e) => {};
-  const speedButtonChangeHandler = (e) => {};
+  const runButtonClickHandler = (e) => {
+    if (!sourceCode.trim()) {
+      return;
+    }
+    executor.setup(setNodeList, setParseError, setIsRunning, setLog);
+    executor.startExecution(speed, sourceCode);
+    setLog("");
+    setIsRunning(true);
+  };
+  const stopButtonClickHandler = (e) => {
+    setIsRunning(false);
+    executor.stopExecution();
+  };
+  const pauseButtonClickHandler = (e) => {
+    setIsPause((previousValue) => {
+      if (previousValue) {
+        executor.unPauseExecution();
+      } else {
+        executor.pauseExecution();
+      }
+      return !isPause;
+    });
+  };
+  const speedButtonChangeHandler = (e) => {
+    setSpeed(e.value);
+  };
   return (
-    <div className="mx-2 my-4 bg-primary">
+    <div className="mx-2 my-4 ">
       <Splitter style={{ height: "420px", borderRadius: "0px" }}>
         <SplitterPanel className=" " size={65} minSize={50}>
           <VisualizePanel
             speedChangeHandler={speedButtonChangeHandler}
             speed={speed}
-            //nodeList={}
+            nodeList={nodeList}
+            isRunning={isRunning}
           />
         </SplitterPanel>
         <SplitterPanel className="" size={35} minSize={10}>
@@ -68,6 +90,7 @@ const Home = () => {
           />
         </SplitterPanel>
       </Splitter>
+      <LogView logText={log} header="Log view" />
     </div>
   );
 };

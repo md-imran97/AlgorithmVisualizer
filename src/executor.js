@@ -6,9 +6,17 @@ import {
   fixedNodeStyle,
 } from "./nodeStyle";
 
-export default function executor({ setNodeList, setParseError, setIsRunning }) {
+export default function executor() {
   const queue = new ExecutionQueue();
+  const speedConstant = 15;
+  const totalSpeed = 100;
   let visualNodeList = [];
+
+  let setNodeList = null;
+  let setParseError = null;
+  let setIsRunning = null;
+  let setLog = null;
+
   let isCodeParsing = false;
   let isParseFailed = false;
   let isCodeRunning = false;
@@ -77,6 +85,10 @@ export default function executor({ setNodeList, setParseError, setIsRunning }) {
     visualNodeList[posNode2] = node1;
     setNodeList([...visualNodeList]);
   }
+  function executeLog(logText) {
+    console.log(logText);
+    setLog((pv) => `${pv}\n` + logText.toString());
+  }
 
   // visual function
   function drawList(nodeList) {
@@ -97,7 +109,11 @@ export default function executor({ setNodeList, setParseError, setIsRunning }) {
   function resetNode(node) {
     queue.enqueue(() => executeResetNode(node));
   }
+  function log(logText) {
+    queue.enqueue(() => executeLog(logText));
+  }
 
+  // execution command function
   this.startExecution = function (speed, sourceCode) {
     run(speed, sourceCode);
   };
@@ -106,6 +122,20 @@ export default function executor({ setNodeList, setParseError, setIsRunning }) {
   };
   this.pauseExecution = function () {
     isCodePause = true;
+  };
+  this.unPauseExecution = function () {
+    isCodePause = false;
+  };
+  this.setup = function (
+    setNodeListFunction,
+    setParseErrorFunction,
+    setIsRunningFunction,
+    setLogFunction
+  ) {
+    setNodeList = setNodeListFunction;
+    setParseError = setParseErrorFunction;
+    setIsRunning = setIsRunningFunction;
+    setLog = setLogFunction;
   };
 
   function run(speed, sourceCode) {
@@ -117,33 +147,49 @@ export default function executor({ setNodeList, setParseError, setIsRunning }) {
     isCodePause = false;
 
     parseSourceCode(sourceCode);
-    if (isParseFailed) {
-      isParseFailed = false;
-      return;
-    }
+    // if (isParseFailed) {
+    //   isParseFailed = false;
+    //   return;
+    // }
     isCodeRunning = true;
     const intervalId = setInterval(() => {
       if (isCodePause) return;
       let currentStatment = queue.dequeue();
+
       if (!currentStatment || !isCodeRunning) {
         isCodeRunning = false;
         isCodePause = false;
         setIsRunning(false);
         clearInterval(intervalId);
+        return;
       }
       currentStatment();
-    }, (100 - speed) * 100);
+    }, (totalSpeed - speed) * speedConstant);
   }
   function parseSourceCode(sourceCode) {
     isCodeParsing = true;
+
     try {
-      const dynamicFunction = new Function(`return ()=>{${sourceCode}}`);
-      dynamicFunction()();
+      const dynamicFunction = new Function(
+        `return (drawList,pointPrimaryNode,pointSecondaryNode,swapNode,fixedNode,resetNode,log )=>{${sourceCode}}`
+      );
+      console.log("drawList", drawList);
+      dynamicFunction()(
+        drawList,
+        pointPrimaryNode,
+        pointSecondaryNode,
+        swapNode,
+        fixedNode,
+        resetNode,
+        log
+      );
       isCodeParsing = false;
     } catch (error) {
       isCodeParsing = false;
       isParseFailed = true;
       setParseError(error);
+      queue.reset();
+      queue.enqueue(() => executeLog(error));
     }
   }
 }
