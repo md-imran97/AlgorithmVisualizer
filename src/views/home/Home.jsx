@@ -7,8 +7,35 @@ import Executor from "../../executor";
 const Home = () => {
   const [isRunning, setIsRunning] = useState(false);
   const [isPause, setIsPause] = useState(false);
-  const [speed, setSpeed] = useState(50);
-  const [sourceCode, setSourceCode] = useState("");
+  const [speed, setSpeed] = useState(80);
+  const [sourceCode, setSourceCode] = useState(`
+  // Language support: Javascript (only)
+  // All the methods to visualize algorithm
+
+  // array element must be an object and must have id and value property
+  // let arr = [{id:1,value:5}] 
+
+  // Draw the full array
+  // drawList(array)
+
+  // Draw the node (element of an array) to red
+  // pointPrimaryNode(node)
+
+  // Draw the node to orrange
+  // pointSecondaryNode(node)
+
+  // Swap two node in visualize window
+  // swapNode(firstNode, secondNode)
+
+  // Draw the node to default blue
+  // resetNode(node)
+
+  // Draw the node to green
+  //  fixedNode(node)
+
+  // Write log to Log view window
+  // log(logText)
+  `);
   const [nodeList, setNodeList] = useState([]);
   const [parseError, setParseError] = useState("");
   const executor = useRef(
