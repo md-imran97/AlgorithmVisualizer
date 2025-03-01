@@ -1,9 +1,10 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { Splitter, SplitterPanel } from "primereact/splitter";
 import VisualizePanel from "./components/VisualizePanel";
 import CodePanel from "./components/CodePanel";
 import Executor from "../../executor";
 import LogView from "./components/LogView";
+import exampleCode from "../../exampleCode";
 const executor = new Executor();
 const Home = () => {
   const [isRunning, setIsRunning] = useState(false);
@@ -11,31 +12,29 @@ const Home = () => {
   const [speed, setSpeed] = useState(80);
   const [sourceCode, setSourceCode] = useState(`
   // Language support: Javascript (only)
+
   // All the methods to visualize algorithm
 
   // array element must be an object and must have id and value property
   // let arr = [{id:1,value:5}] 
-
   // Draw the full array
   // drawList(array)
-
   // Draw the node (element of an array) to red
   // pointPrimaryNode(node)
-
   // Draw the node to orrange
   // pointSecondaryNode(node)
-
   // Swap two node in visualize window
   // swapNode(firstNode, secondNode)
-
   // Draw the node to default blue
   // resetNode(node)
-
   // Draw the node to green
   //  fixedNode(node)
-
   // Write log to Log view window
   // log(logText)
+
+  // Sample buble sort code
+  ${exampleCode[0].code}
+
   `);
   const [nodeList, setNodeList] = useState([]);
   const [parseError, setParseError] = useState("");
